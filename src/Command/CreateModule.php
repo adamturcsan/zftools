@@ -46,7 +46,7 @@ class CreateModule implements CommandInterface
 
     public function run()
     {
-        if(class_exists('Zend\\ModuleManager\\\\ModuleManager')) {
+        if(class_exists('Zend\\ModuleManager\\ModuleManager')) {
             echo "Fasza";
         }
         throw new \Exception("Not in a Zend Framework project");
