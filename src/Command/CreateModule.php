@@ -7,6 +7,7 @@
 namespace Legow\ZFTools\Command;
 
 use LegoW\ZFTools\CommandInterface;
+use LegoW\ZFTools\Utils;
 /**
  * Description of CreateModule
  *
@@ -22,44 +23,10 @@ class CreateModule implements CommandInterface
     
     private $errorInfo = [];
     
-    private $moduleClassTemplate = '<?php 
-
-namespace %s;
-
-class Module {
-    public function getConfig()
-    {
-        return include __DIR__.\'/../config/module.config.php\';
-    }
-}
-';
-    private $indexControllerClassTemplate = '<?php 
-
-namespace %s\Controller;
-
-use Zend\Mvc\Controller\AbstractActionController;
-use Zend\View\Model\ViewModel;
-
-class IndexController extends AbstractActionController
-{
-    public function indexAction()
-    {
-        return new ViewModel();
-    }
-}
-';
-    private $moduleConfigTempalte = '<?php 
-
-namespace %s;
-
-return [
-    \'controllers\' => [
-        \'factories\' => [
-            Controller\IndexController::class => InvokableFactory::class,
-        ],
-    ]
-];
-';
+    private $moduleClassTemplate = 'Module.tpl';
+    
+    private $indexControllerClassTemplate = 'IndexController.tpl';
+    private $moduleConfigTempalte = 'module.config.tpl';
     
     public function feed($argument)
     {
@@ -101,22 +68,44 @@ return [
     
     public function createModule($name)
     {
+        $defaultWD = getcwd();
         chdir('../');
+        $templates = $this->fetchTemplatesFor($name);
         if(basename(getcwd()) == 'vendor' || is_dir('../module')) {
-            //GOOD
+            mkdir('../module/'.$name, 0776, true);
+            chdir('../module/'.$name);
         } elseif (basename(getcwd()) == 'zf-tools') { //for develop pruposes
             if(!is_dir('module')) {
                 mkdir('module/'.$name,0776, true);
             }
             chdir('module/'.$name);
-            mkdir('config', 0776);
-            mkdir('src/Controller', 0776, true);
-            $classDefinition = sprintf($this->moduleClassTemplate, $name);
-            file_put_contents('src/Module.php', $classDefinition);
-            $controllerDefinition = sprintf($this->indexControllerClassTemplate, $name);
-            file_put_contents('src/Controller/IndexController.php', $controllerDefinition);
-            $confgiDefinition = sprintf($this->moduleConfigTempalte, $name);
-            file_put_contents('config/module.config.php', $confgiDefinition);
         }
+        mkdir('config', 0776);
+        mkdir('src/Controller', 0776, true);
+        file_put_contents('src/Module.php', $templates['moduleClass']);
+        file_put_contents('src/Controller/IndexController.php', $templates['controller']);
+        file_put_contents('config/module.config.php', $templates['moduleConfig']);
+        $this->addToModulesList($name);
+        chdir($defaultWD);
+    }
+    
+    private function fetchTemplatesFor($name)
+    {
+        $templates = [];
+        $templates['moduleClass'] = sprintf(file_get_contents('src/code-templates/'.$this->moduleClassTemplate), $name);
+        $templates['controller'] = sprintf(file_get_contents('src/code-templates/'.$this->indexControllerClassTemplate), $name);
+        $templates['moduleConfig'] = sprintf(file_get_contents('src/code-templates/'.$this->moduleConfigTempalte), $name);
+        return $templates;
+    }
+    
+    private function addToModulesList($name)
+    {
+        $modulesConfig = '../../config/modules.config.php';
+        $modules = include $modulesConfig;
+        $modules[] = $name;
+        $fileContent = file_get_contents($modulesConfig);
+        preg_match('/\/\*\*[\n\r\s\t\*@\w:\/\.\(\)-]+\*\//i', $fileContent, $matches);
+        var_dump($matches);
+        file_put_contents($modulesConfig, "<?php\n\n".array_shift($matches)."\n\nreturn ".Utils::arrayExport($modules).";");
     }
 }
