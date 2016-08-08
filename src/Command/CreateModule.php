@@ -4,66 +4,38 @@
  * All rights reserved © 2016 Legow Hosting Kft.
  */
 
-namespace Legow\ZFTools\Command;
+namespace LegoW\ZFTools\Command;
 
 use LegoW\ZFTools\CommandInterface;
 use LegoW\ZFTools\Utils;
+use LegoW\ZFTools\Command\CreateModule\{
+    ModuleClassGenerator,
+    IndexControllerClassGenerator,
+    ModuleConfigGenerator
+};
 /**
  * Description of CreateModule
  *
  * @author Turcsán Ádám <turcsan.adam@legow.hu>
  */
-class CreateModule implements CommandInterface
+class CreateModule extends AbstractCommand
 {
-    private $availableOptions = [
+    protected $availableOptions = [
         'name' => 'required'
     ];
     
-    private $options = [];
+    protected $options = [];
     
-    private $errorInfo = [];
-    
-    private $moduleClassTemplate = 'Module.tpl';
-    
-    private $indexControllerClassTemplate = 'IndexController.tpl';
+    protected $errorInfo = [];
+        
     private $moduleConfigTempalte = 'module.config.tpl';
     
-    public function feed($argument)
-    {
-        foreach($this->availableOptions as $name => $isRequired) {
-            if(!array_key_exists($name, $this->options)) {
-                $this->options[$name] = $argument;
-                return;
-            }
-        }
-    }
-
-    public function isValid()
-    {
-        $valid = true;
-        foreach($this->availableOptions as $name => $isRequired) {
-            if($isRequired && !array_key_exists($name, $this->options)) {
-                $valid = false;
-                $this->errorInfo[] = 'Option \''.$name.'\' is required.';
-            }
-        }
-        return $valid;
-    }
-
     public function run()
     {
         if(!class_exists('\\Zend\\ModuleManager\\ModuleManager')) {
             throw new \Exception("Not in a Zend Framework project");
         }
         return $this->createModule($this->options["name"]);
-    }
-
-    public function errorInfo()
-    {
-        foreach($this->errorInfo as $msg) {
-            echo $msg.PHP_EOL;
-        }
-        return 1;
     }
     
     public function createModule($name)
@@ -89,12 +61,20 @@ class CreateModule implements CommandInterface
         chdir($defaultWD);
     }
     
+    /**
+     * @todo Replace templates with zend-code codegeneration tool
+     * @param string $name Desired module name
+     * @return array
+     */
     private function fetchTemplatesFor($name)
     {
         $templates = [];
-        $templates['moduleClass'] = sprintf(file_get_contents('src/code-templates/'.$this->moduleClassTemplate), $name);
-        $templates['controller'] = sprintf(file_get_contents('src/code-templates/'.$this->indexControllerClassTemplate), $name);
-        $templates['moduleConfig'] = sprintf(file_get_contents('src/code-templates/'.$this->moduleConfigTempalte), $name);
+        $moduleClassGenerator = new ModuleClassGenerator($name);
+        $templates['moduleClass'] = $moduleClassGenerator->generate();
+        $controllerClassGenerator = new IndexControllerClassGenerator($name.'\\Controller');
+        $templates['controller'] = $controllerClassGenerator->generate();
+        $moduleConfigGenerator = new ModuleConfigGenerator($name);
+        $templates['moduleConfig'] = $moduleConfigGenerator->generate();
         return $templates;
     }
     
@@ -105,7 +85,6 @@ class CreateModule implements CommandInterface
         $modules[] = $name;
         $fileContent = file_get_contents($modulesConfig);
         preg_match('/\/\*\*[\n\r\s\t\*@\w:\/\.\(\)-]+\*\//i', $fileContent, $matches);
-        var_dump($matches);
         file_put_contents($modulesConfig, "<?php\n\n".array_shift($matches)."\n\nreturn ".Utils::arrayExport($modules).";");
     }
 }
