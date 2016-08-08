@@ -59,7 +59,7 @@ class CreateModule extends AbstractCommand
         file_put_contents('src/Controller/IndexController.php', $templates['controller']);
         chmod('src/Controller/IndexController.php', 0775);
         file_put_contents('config/module.config.php', $templates['moduleConfig']);
-        chmod('src/module.config.php', 0775);
+        chmod('config/module.config.php', 0775);
         $this->addToModulesList($name);
         chdir($defaultWD);
         $this->addModuleToComposerAutoload($name);
