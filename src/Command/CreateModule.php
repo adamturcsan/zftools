@@ -97,7 +97,7 @@ class CreateModule extends AbstractCommand
         if(basename(getcwd()) == 'vendor' || is_file('../composer.json')) {
             $composerJson = json_decode(file_get_contents('../composer.json'));
             $composerJson->autoload->{'psr-4'}->{$name.'\\'} = 'module/'.$name.'/src/';
-            file_put_contents('../composer.json', json_decode($composerJson, JSON_PRETTY_PRINT));
+            file_put_contents('../composer.json', json_encode($composerJson, JSON_PRETTY_PRINT));
         }
         chdir($defaultWD);
     }
