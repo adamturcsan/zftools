@@ -1,0 +1,23 @@
+{
+    "name": "legow/zf-tools",
+    "description": "Tools for helping Zend Framework app development processes",
+    "type": "library",
+    "bin": [
+        "bin/zf-tools"
+    ],
+    "require": {
+        "php": "^7.0",
+        "zendframework/zend-code": "^3.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^5.5",
+        "zendframework/zend-modulemanager": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "LegoW\\ZFTools\\": "src/"
+        }
+    },
+    "license": "MIT",
+    "minimum-stability": "dev"
+}
