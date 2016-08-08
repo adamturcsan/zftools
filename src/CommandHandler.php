@@ -1,5 +1,5 @@
 <?php
-
+declare (strict_types=1);
 /*
  * All rights reserved © 2016 Legow Hosting Kft.
  */
@@ -9,6 +9,9 @@ namespace LegoW\ZFTools;
 class CommandHandler
 {
 
+    /**
+     * @var array
+     */
     private $argStack = [];
 
     /**
@@ -47,7 +50,7 @@ class CommandHandler
      * @return CommandInterface
      * @throws \InvalidArgumentException
      */
-    private function fetchCommand($name)
+    private function fetchCommand($name):CommandInterface
     {
         $className = 'LegoW\\ZFTools\\Command\\' . $this->commandNameFormat($name);
         if (class_exists($className)) {
@@ -77,7 +80,7 @@ class CommandHandler
      * @param array $arguments
      * @return int
      */
-    public function __invoke(array $arguments)
+    public function __invoke(array $arguments):int
     {
 //        $help = new Help();
         // Called without arguments
@@ -89,7 +92,7 @@ class CommandHandler
 
     }
 
-    private function commandNameFormat($string)
+    private function commandNameFormat($string):string
     {
         return str_replace(' ', '', ucwords(str_replace('-', ' ', $string)));
     }

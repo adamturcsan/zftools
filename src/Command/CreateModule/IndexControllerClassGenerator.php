@@ -1,5 +1,5 @@
 <?php
-
+declare(strict_types=1);
 /*
  * All rights reserved © 2016 Legow Hosting Kft.
  */
@@ -9,7 +9,8 @@ namespace LegoW\ZFTools\Command\CreateModule;
 use Zend\Code\Generator\{
     FileGenerator,
     ClassGenerator,
-    MethodGenerator
+    MethodGenerator,
+    DocBlockGenerator
 };
 
 /**
@@ -19,7 +20,7 @@ use Zend\Code\Generator\{
  */
 class IndexControllerClassGenerator extends FileGenerator
 {
-    public function __construct($namespace, $options = null)
+    public function __construct(string $namespace)
     {
         $options = [
             'classes' => [
@@ -33,7 +34,7 @@ class IndexControllerClassGenerator extends FileGenerator
         parent::__construct($options);
     }
     
-    public function getMethods()
+    public function getMethods():array
     {
         return [
             new MethodGenerator(
@@ -45,8 +46,8 @@ class IndexControllerClassGenerator extends FileGenerator
         ];
     }
     
-    public function getControllerDocBlock()
+    public function getControllerDocBlock():DocBlockGenerator
     {
-        return new \Zend\Code\Generator\DocBlockGenerator('Example IndexController', 'Class generated with LegoW\\ZFTools');
+        return new DocBlockGenerator('Example IndexController', 'Class generated with LegoW\\ZFTools');
     }
 }

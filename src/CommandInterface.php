@@ -1,5 +1,5 @@
 <?php
-
+declare(strict_types=1);
 /*
  * All rights reserved © 2016 Legow Hosting Kft.
  */
@@ -23,7 +23,7 @@ interface CommandInterface
     /**
      * @return boolean
      */
-    public function isValid();
+    public function isValid():bool;
     
-    public function errorInfo();
+    public function errorInfo():int;
 }

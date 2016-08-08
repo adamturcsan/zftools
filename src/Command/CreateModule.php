@@ -1,5 +1,5 @@
 <?php
-
+declare (strict_types=1);
 /*
  * All rights reserved © 2016 Legow Hosting Kft.
  */
@@ -38,7 +38,7 @@ class CreateModule extends AbstractCommand
         return $this->createModule($this->options["name"]);
     }
     
-    public function createModule($name)
+    public function createModule(string $name)
     {
         $defaultWD = getcwd();
         chdir('../../../');
@@ -70,7 +70,7 @@ class CreateModule extends AbstractCommand
      * @param string $name Desired module name
      * @return array
      */
-    private function fetchTemplatesFor($name)
+    private function fetchTemplatesFor(string $name):array
     {
         $templates = [];
         $moduleClassGenerator = new ModuleClassGenerator($name);
@@ -82,17 +82,19 @@ class CreateModule extends AbstractCommand
         return $templates;
     }
     
-    private function addToModulesList($name)
+    private function addToModulesList(string $name)
     {
         $modulesConfig = '../../config/modules.config.php';
-        $modules = include $modulesConfig;
-        $modules[] = $name;
-        $fileContent = file_get_contents($modulesConfig);
-        preg_match('/\/\*\*[\n\r\s\t\*@\w:\/\.\(\)-]+\*\//i', $fileContent, $matches);
-        file_put_contents($modulesConfig, "<?php\n\n".array_shift($matches)."\n\nreturn ".Utils::arrayExport($modules).";");
+        if(is_file($modulesConfig)) {
+            $modules = include $modulesConfig;
+            $modules[] = $name;
+            $fileContent = file_get_contents($modulesConfig);
+            preg_match('/\/\*\*[\n\r\s\t\*@\w:\/\.\(\)-]+\*\//i', $fileContent, $matches);
+            file_put_contents($modulesConfig, "<?php\n\n".array_shift($matches)."\n\nreturn ".Utils::arrayExport($modules).";");
+        }
     }
     
-    private function addModuleToComposerAutoload($name)
+    private function addModuleToComposerAutoload(string $name)
     {
         
         $defaultWD = getcwd();

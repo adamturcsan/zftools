@@ -1,5 +1,5 @@
 <?php
-
+declare(strict_types=1);
 /*
  * All rights reserved © 2016 Legow Hosting Kft.
  */
@@ -9,7 +9,8 @@ namespace LegoW\ZFTools\Command\CreateModule;
 use Zend\Code\Generator\{
     FileGenerator,
     ClassGenerator,
-    MethodGenerator
+    MethodGenerator,
+    DocBlockGenerator
 };
 
 /**
@@ -24,7 +25,7 @@ class ModuleClassGenerator extends FileGenerator
      */
     private $moduleName;
     
-    public function __construct($moduleName, $options = null)
+    public function __construct(string $moduleName)
     {
         $this->moduleName = $moduleName;
         $options = [
@@ -35,16 +36,16 @@ class ModuleClassGenerator extends FileGenerator
         parent::__construct($options);
     }
     
-    private function getMethods()
+    private function getMethods():array
     {
         return [
             new MethodGenerator('getConfig', [], 'public', 'return include __DIR__ . \'/../config/module.config.php\';', null)
         ];
     }
     
-    private function getModuleDocBlock()
+    private function getModuleDocBlock():DocBlockGenerator
     {
-        return new \Zend\Code\Generator\DocBlockGenerator(
+        return new DocBlockGenerator(
                 'Module class for '.$this->moduleName,
                 'Module \''.$this->moduleName.'\' is generated with LegoW\\ZFTools',
                 []
