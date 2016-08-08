@@ -44,19 +44,22 @@ class CreateModule extends AbstractCommand
         chdir('../../../');
         $templates = $this->fetchTemplatesFor($name);
         if(basename(getcwd()) == 'vendor' || is_dir('../module')) {
-            mkdir('../module/'.$name, 0776, true);
+            mkdir('../module/'.$name, 0775, true);
             chdir('../module/'.$name);
         } elseif (chdir($defaultWD.'/../') && basename(getcwd()) == 'zf-tools') { //for develop pruposes
             if(!is_dir('module')) {
-                mkdir('module/'.$name,0776, true);
+                mkdir('module/'.$name,0775, true);
             }
             chdir('module/'.$name);
         }
-        mkdir('config', 0776);
-        mkdir('src/Controller', 0776, true);
+        mkdir('config', 0775);
+        mkdir('src/Controller', 0775, true);
         file_put_contents('src/Module.php', $templates['moduleClass']);
+        chmod('src/Module.php', 0775);
         file_put_contents('src/Controller/IndexController.php', $templates['controller']);
+        chmod('src/Controller/IndexController.php', 0775);
         file_put_contents('config/module.config.php', $templates['moduleConfig']);
+        chmod('src/module.config.php', 0775);
         $this->addToModulesList($name);
         chdir($defaultWD);
         $this->addModuleToComposerAutoload($name);
