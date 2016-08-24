@@ -74,24 +74,6 @@ class CommandHandler
         exit($command->errorInfo());
     }
 
-    /**
-     * Handle the CLI arguments.
-     *
-     * @param array $arguments
-     * @return int
-     */
-    public function __invoke(array $arguments):int
-    {
-//        $help = new Help();
-        // Called without arguments
-        if (count($arguments) < 1) {
-            fwrite(STDERR, 'No arguments provided.' . PHP_EOL . PHP_EOL);
-            $help(STDERR);
-            return 1;
-        }
-
-    }
-
     private function commandNameFormat($string):string
     {
         return str_replace(' ', '', ucwords(str_replace('-', ' ', $string)));
