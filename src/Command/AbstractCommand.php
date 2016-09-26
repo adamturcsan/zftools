@@ -4,7 +4,7 @@ declare(strict_types=1);
  * All rights reserved © 2016 Legow Hosting Kft.
  */
 
-namespace Legow\ZFTools\Command;
+namespace LegoW\ZFTools\Command;
 
 use LegoW\ZFTools\CommandInterface;
 /**
