@@ -26,7 +26,7 @@ class ModuleConfigGenerator extends \Zend\Code\Generator\FileGenerator
 
         $fileBody = preg_replace('/<\?php/', '',$fileReflection->getContents());
         $strippedBody = preg_replace('/[\n\s]*(namespace)/', "$1", $fileBody);
-        $finalBody = preg_replace('/(factories\'\s*=>\s* \[)/',
+        $finalBody = preg_replace('/(\'controllers\'\s*=>\s*\[[\s\n]*\'factories\'\s*=>\s* \[)/',
                 "$1\n            Controller\\" . $controllerName . 'Controller::class => Controller\\' . $controllerName . 'ControllerFactory::class,',
                 $strippedBody);
 
