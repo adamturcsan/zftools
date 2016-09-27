@@ -1,5 +1,5 @@
 <?php
-
+declare (strict_types=1);
 /*
  * All rights reserved © 2016 Legow Hosting Kft.
  */
@@ -9,6 +9,9 @@ namespace LegoW\ZFTools;
 class CommandHandler
 {
 
+    /**
+     * @var array
+     */
     private $argStack = [];
 
     /**
@@ -16,6 +19,9 @@ class CommandHandler
      */
     public function __construct(array $arguments = [])
     {
+        if(count($arguments) == 0) {
+            throw new \InvalidArgumentException("At least one parameter has to be given");
+        }
         $this->argStack = $arguments;
     }
 
@@ -47,7 +53,7 @@ class CommandHandler
      * @return CommandInterface
      * @throws \InvalidArgumentException
      */
-    private function fetchCommand($name)
+    private function fetchCommand($name):CommandInterface
     {
         $className = 'LegoW\\ZFTools\\Command\\' . $this->commandNameFormat($name);
         if (class_exists($className)) {
@@ -71,25 +77,7 @@ class CommandHandler
         exit($command->errorInfo());
     }
 
-    /**
-     * Handle the CLI arguments.
-     *
-     * @param array $arguments
-     * @return int
-     */
-    public function __invoke(array $arguments)
-    {
-//        $help = new Help();
-        // Called without arguments
-        if (count($arguments) < 1) {
-            fwrite(STDERR, 'No arguments provided.' . PHP_EOL . PHP_EOL);
-            $help(STDERR);
-            return 1;
-        }
-
-    }
-
-    private function commandNameFormat($string)
+    private function commandNameFormat($string):string
     {
         return str_replace(' ', '', ucwords(str_replace('-', ' ', $string)));
     }

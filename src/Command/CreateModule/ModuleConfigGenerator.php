@@ -1,5 +1,5 @@
 <?php
-
+declare(strict_types=1);
 /*
  * All rights reserved © 2016 Legow Hosting Kft.
  */
@@ -14,7 +14,7 @@ use Zend\Code\Generator\FileGenerator;
  */
 class ModuleConfigGenerator extends FileGenerator
 {
-    public function __construct($namespace)
+    public function __construct(string $namespace)
     {
         parent::__construct([]);
         $this->setNamespace($namespace);
@@ -22,7 +22,7 @@ class ModuleConfigGenerator extends FileGenerator
 'return [
     \'controllers\' => [
         \'factories\' => [
-            Controller\IndexController::class => InvokableFactory::class,
+            Controller\IndexController::class => Controller\IndexControllerFactory::class,
         ],
     ]
 ];'

@@ -1,10 +1,10 @@
 <?php
-
+declare(strict_types=1);
 /*
  * All rights reserved © 2016 Legow Hosting Kft.
  */
 
-namespace Legow\ZFTools\Command;
+namespace LegoW\ZFTools\Command;
 
 use LegoW\ZFTools\CommandInterface;
 /**
@@ -27,11 +27,10 @@ abstract class AbstractCommand implements CommandInterface
                 $this->options[$name] = $argument;
                 return;
             }
-        }  
-        die(var_dump($this->availableOptions, $this->options));
+        }
     }
 
-    public function isValid()
+    public function isValid():bool
     {
         $valid = true;
         foreach($this->availableOptions as $name => $isRequired) {
@@ -45,12 +44,23 @@ abstract class AbstractCommand implements CommandInterface
 
     abstract public function run();
 
-    public function errorInfo()
+    public function errorInfo():int
     {
         foreach($this->errorInfo as $msg) {
             echo $msg.PHP_EOL;
         }
         return 1;
+    }
+    
+    /**
+     * Changes to project root
+     * @return string Default working directory
+     */
+    protected function changeToRoot() : string
+    {
+        $defaultWD = getcwd();
+        chdir('../../../');
+        return $defaultWD;
     }
     
 }
