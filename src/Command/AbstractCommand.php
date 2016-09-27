@@ -52,4 +52,15 @@ abstract class AbstractCommand implements CommandInterface
         return 1;
     }
     
+    /**
+     * Changes to project root
+     * @return string Default working directory
+     */
+    protected function changeToRoot() : string
+    {
+        $defaultWD = getcwd();
+        chdir('../../../');
+        return $defaultWD;
+    }
+    
 }

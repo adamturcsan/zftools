@@ -39,12 +39,11 @@ class CreateModule extends AbstractCommand
 
     public function createModule(string $name)
     {
-        $defaultWD = getcwd();
-        chdir('../../../');
+        $defaultWD = $this->changeToRoot();
         if (basename(getcwd()) == 'vendor' || is_dir('../module')) {
             mkdir('../module/' . $name, 0775, true);
             chdir('../module/' . $name);
-        } elseif (chdir($defaultWD . '/../') && basename(getcwd()) == 'zf-tools') { //for develop pruposes
+        } elseif (chdir($defaultWD . '/../') && basename(getcwd()) == 'zfTools') { //for develop pruposes
             if (!is_dir('module')) {
                 mkdir('module/' . $name, 0775, true);
             }
@@ -82,13 +81,13 @@ class CreateModule extends AbstractCommand
         file_put_contents('src/Controller/IndexController.php',
                 $controllerClassGenerator->generate());
         chmod('src/Controller/IndexController.php', 0775);
-        $factoryClassGenerator = new IndexControllerFactoryClassGenerator($name.'\\Controller');
+        $factoryClassGenerator = new IndexControllerFactoryClassGenerator($name . '\\Controller');
         file_put_contents('src/Controller/IndexControllerFactory.php',
                 $factoryClassGenerator->generate());
         chmod('src/Controller/IndexControllerFactory.php', 0775);
         return true;
     }
-    
+
     /**
      * @param string $name Module name
      * @return bool
@@ -96,7 +95,8 @@ class CreateModule extends AbstractCommand
     private function createModuleConfigGenerator(string $name): bool
     {
         $moduleConfigGenerator = new ModuleConfigGenerator($name);
-        file_put_contents('config/module.config.php', $moduleConfigGenerator->generate());
+        file_put_contents('config/module.config.php',
+                $moduleConfigGenerator->generate());
         chmod('config/module.config.php', 0775);
         return true;
     }

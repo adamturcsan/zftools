@@ -18,6 +18,11 @@ if (file_exists($a = __DIR__ . '/../../../autoload.php')) {
     fwrite(STDERR, 'Cannot locate autoloader; please run "composer install"' . PHP_EOL);
     exit(1);
 }
-
-$command = new CommandHandler(array_slice($argv, 1));
-$command->dispatchCommand();
+try {
+    $command = new CommandHandler(array_slice($argv, 1));
+    $command->dispatchCommand();
+}
+catch(\Exception $ex) {
+    fwrite(STDERR, 'Error occured: '.$ex->getMessage().PHP_EOL);
+    exit($ex->getCode());
+}
