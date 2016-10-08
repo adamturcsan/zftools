@@ -1,0 +1,4 @@
+## YAML Template.
+language: php
+php:
+    - '7.0'
