@@ -1,13 +1,19 @@
 sudo: false
+
 language: php
+
 php:
     - '7.0'
+    
 before_install:
     - composer self-update
-    - composer require --dev --no-update
+    - composer require --dev --no-update satooshi/php-coveralls:^1.0
     
 install:
     - travis_retry composer install --no-interaction --ignore-platform-reqs
-    
+ 
 script:
-    - ./vendor/bin/phpunit --configuration test/configuration.xml test
+    - ./vendor/bin/phpunit --configuration test/configuration.xml --coverage-clover clover.xml test
+
+after_script:
+    - ./vendor/bin/coveralls

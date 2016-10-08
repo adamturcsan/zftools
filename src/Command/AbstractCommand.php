@@ -1,8 +1,13 @@
 <?php
-declare(strict_types=1);
+
 /*
- * All rights reserved © 2016 Legow Hosting Kft.
+ * LegoW\ZFTools (https://github.com/adamturcsan/zftools)
+ * 
+ * @copyright Copyright (c) 2014-2016 Legow Hosting Kft. (http://www.legow.hu)
+ * @license https://opensource.org/licenses/MIT MIT License
  */
+
+declare (strict_types = 1);
 
 namespace LegoW\ZFTools\Command;
 
