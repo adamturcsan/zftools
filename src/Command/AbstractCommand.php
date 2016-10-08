@@ -47,12 +47,12 @@ abstract class AbstractCommand implements CommandInterface
         return $valid;
     }
 
-    abstract public function run();
+    abstract public function run() : int;
 
     public function errorInfo():int
     {
         foreach($this->errorInfo as $msg) {
-            echo $msg.PHP_EOL;
+            fputs(STDERR, $msg.PHP_EOL);
         }
         return 1;
     }

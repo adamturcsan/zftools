@@ -18,6 +18,11 @@
             "LegoW\\ZFTools\\": "src/"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "LegoW\\ZFTools\\Test\\": "test/"
+        }
+    },
     "license": "MIT",
     "minimum-stability": "dev"
 }

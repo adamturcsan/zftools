@@ -6,9 +6,7 @@
     colors="true"
     syntaxCheck="true">
     <filter>
-        <whitelist
-            addUncoveredFilesFromWhitelist="true"
-            processUncoveredFilesFromWhitelist="true">
+        <whitelist>
             <directory suffix=".php">../src/</directory>
         </whitelist>
     </filter>

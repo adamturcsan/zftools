@@ -32,7 +32,7 @@ class CreateController extends AbstractCommand
     protected $options = [];
     protected $errorInfo = [];
 
-    public function run()
+    public function run(): int
     {
         if (!class_exists('\\Zend\\ModuleManager\\ModuleManager')) {
             throw new \Exception("Not in a Zend Framework project");
@@ -40,11 +40,15 @@ class CreateController extends AbstractCommand
 //        if(!$this->moduleExists($this->options['module'])) {
 //            throw new \Exception("Module does not exist");
 //        }
-        $this->createController($this->options['module'], $this->options['name']);
+        if ($this->createController($this->options['module'],
+                        $this->options['name'])) {
+            return 0;
+        }
+        return 1;
     }
 
     protected function createController(string $moduleName,
-            string $controllerName)
+            string $controllerName): bool
     {
         $defaultWD = $this->changeToRoot();
         if (basename(getcwd()) == 'vendor' || is_dir('../module')) {
@@ -62,6 +66,7 @@ class CreateController extends AbstractCommand
         $this->generateControllerFiles($moduleName, $controllerName);
         $this->addControllerToModuleConfig($moduleName, $controllerName);
         chdir($defaultWD);
+        return true;
     }
 
     protected function generateControllerFiles(string $moduleName,

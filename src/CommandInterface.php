@@ -23,7 +23,7 @@ interface CommandInterface
      */
     public function feed($argument);
 
-    public function run();
+    public function run() : int;
 
     /**
      * @return boolean
