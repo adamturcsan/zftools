@@ -1,4 +1,13 @@
-## YAML Template.
+sudo: false
 language: php
 php:
     - '7.0'
+before_install:
+    - composer self-update
+    - composer require --dev --no-update
+    
+install:
+    - travis_retry composer install --no-interaction --ignore-platform-reqs
+    
+script:
+    - ./vendor/bin/phpunit
