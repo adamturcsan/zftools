@@ -47,7 +47,7 @@ class CreateController extends AbstractCommand
         return 1;
     }
 
-    protected function createController(string $moduleName,
+    public function createController(string $moduleName,
             string $controllerName): bool
     {
         $defaultWD = $this->changeToRoot();
