@@ -33,11 +33,13 @@ abstract class AbstractCommand implements CommandInterface
                 return;
             }
         }
+        throw new \InvalidArgumentException('This command cannot process this many arguments');
     }
 
     public function isValid():bool
     {
         $valid = true;
+        $this->errorInfo = []; // Multiple check shouldn't multiply the lines
         foreach($this->availableOptions as $name => $isRequired) {
             if($isRequired && !array_key_exists($name, $this->options)) {
                 $valid = false;

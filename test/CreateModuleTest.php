@@ -56,7 +56,7 @@ class CreateModuleTest extends \PHPUnit_Framework_TestCase
     {
         $createModule = new CreateModule();
         $createModule->isValid();
-        $this->assertTrue(is_int($createModule->errorInfo()));
+        $this->assertEquals(1, $createModule->errorInfo());
     }
     
     public function testCreateModule()

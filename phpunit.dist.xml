@@ -2,15 +2,15 @@
 <phpunit
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="http://schema.phpunit.de/5.4/phpunit.xsd"
-    bootstrap="../vendor/autoload.php"
+    bootstrap="./vendor/autoload.php"
     colors="true"
     syntaxCheck="true">
     <filter>
         <whitelist>
-            <directory suffix=".php">../src/</directory>
+            <directory suffix=".php">./src/</directory>
         </whitelist>
     </filter>
     <logging>
-        <log type="coverage-html" target="../tmp/coverage" />
+        <log type="coverage-clover" target="clover.xml" />
     </logging>
 </phpunit>

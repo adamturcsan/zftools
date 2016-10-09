@@ -60,8 +60,17 @@ class CommandHandlerTest extends \PHPUnit_Framework_TestCase
         $args = [
             'create-module',
             'testDispatch'
-        ];echo getcwd().PHP_EOL;
+        ];
         $createModuleHandler = new CommandHandler($args);
         $this->assertEquals(0, $createModuleHandler->dispatchCommand());
+        $exception = null;
+        try {
+            $badArgs = ['nonExtistantComman'];
+            $failingCommandHandler = new CommandHandler($badArgs);
+            $failingCommandHandler->dispatchCommand();
+        } catch (\Exception $ex) {
+            $exception = $ex;
+        }
+        $this->assertInstanceOf(\InvalidArgumentException::class, $exception);
     }
 }

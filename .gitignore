@@ -1,1 +1,4 @@
 /vendor/
+/test/configuration.xml
+/clover.xml
+/tmp/
