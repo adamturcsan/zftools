@@ -33,24 +33,21 @@ class CreateModule extends AbstractCommand
     protected $options = [];
     protected $errorInfo = [];
 
-    public function run() : int
+    public function run(): int
     {
-        if (!class_exists('\\Zend\\ModuleManager\\ModuleManager')) {
-            throw new \Exception("Not in a Zend Framework project");
-        }
-        if($this->createModule($this->options["name"])) {
+        if ($this->createModule($this->options["name"])) {
             return 0;
         }
         return 1;
     }
 
-    public function createModule(string $name) : bool
+    public function createModule(string $name): bool
     {
-        $defaultWD = $this->changeToRoot(); 
-        if (basename(getcwd()) == 'vendor' || is_dir('../module')) {
+        $defaultWD = $this->changeToRoot();
+        if (!is_dir('../module' . $name)) {
             mkdir('../module/' . $name, 0775, true);
-            chdir('../module/' . $name);
         }
+        chdir('../module/' . $name);
         mkdir('config', 0775);
         mkdir('src/Controller', 0775, true);
         $this->createModuleClassFile($name);
@@ -108,7 +105,7 @@ class CreateModule extends AbstractCommand
     {
         $modulesConfig = '../../config/modules.config.php';
         if (!is_file($modulesConfig)) {
-            if(!is_dir('../../config')) {
+            if (!is_dir('../../config')) {
                 mkdir('../../config', 0775, true);
             }
             touch($modulesConfig);
@@ -131,7 +128,11 @@ class CreateModule extends AbstractCommand
         $defaultWD = $this->changeToRoot();
         if (is_file('../composer.json')) {
             $composerJson = json_decode(file_get_contents('../composer.json'));
-            $composerJson->autoload->{'psr-4'}->{$name . '\\'} = 'module/' . $name . '/src/';
+            $autoload = $composerJson->autoload ?? new \stdClass();
+            $psr4 = $autoload->{'psr-4'} ?? new \stdClass();
+            $psr4->{$name . '\\'} = 'module/' . $name . '/src/';
+            $autoload->{'psr-4'} = $psr4;
+            $composerJson->autoload = $autoload;
             file_put_contents('../composer.json',
                     json_encode($composerJson,
                             JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));

@@ -11,6 +11,9 @@ declare (strict_types = 1);
 
 namespace LegoW\ZFTools\Test;
 
+use Composer\Console\Application;
+use Symfony\Component\Console\Input\ArrayInput;
+
 /**
  * Description of TestEnvironment
  *
@@ -28,7 +31,7 @@ class TestEnvironment
         $root = self::$timeHash . '/UnitTest/';
         mkdir($root . 'module', 0775, true);
         mkdir($root . 'vendor/legow/zf-tools/bin', 0775, true);
-        file_put_contents($root . 'composer.json', '{"autoload":{"psr-4":{}}}');
+        self::initComposer($root);
         chdir($root . 'vendor/legow/zf-tools/bin');
     }
 
@@ -39,6 +42,19 @@ class TestEnvironment
         if (is_dir($workDir)) {
             system('rm -R ' . $workDir);
         }
+    }
+    
+    private static function initComposer($root)
+    {
+        putenv('COMPOSER_HOME='.getcwd().'/../vendor/bin/composer');
+        $cwd = getcwd();
+        chdir($root);
+        $input = new ArrayInput(['command' => 'init']);
+        $application = new Application();
+        $application->setAutoExit(false); // prevent `$application->run` method from exitting the script
+        $exitCode = $application->run($input);
+        chdir($cwd);
+        return $exitCode;
     }
 
 }
