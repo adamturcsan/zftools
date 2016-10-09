@@ -1,9 +1,13 @@
 <?php
 
-declare (strict_types = 1);
 /*
- * All rights reserved © 2016 Legow Hosting Kft.
+ * LegoW\ZFTools (https://github.com/adamturcsan/zftools)
+ * 
+ * @copyright Copyright (c) 2014-2016 Legow Hosting Kft. (http://www.legow.hu)
+ * @license https://opensource.org/licenses/MIT MIT License
  */
+
+declare (strict_types = 1);
 
 namespace LegoW\ZFTools\Command;
 
@@ -29,25 +33,23 @@ class CreateModule extends AbstractCommand
     protected $options = [];
     protected $errorInfo = [];
 
-    public function run()
+    public function run() : int
     {
         if (!class_exists('\\Zend\\ModuleManager\\ModuleManager')) {
             throw new \Exception("Not in a Zend Framework project");
         }
-        return $this->createModule($this->options["name"]);
+        if($this->createModule($this->options["name"])) {
+            return 0;
+        }
+        return 1;
     }
 
-    public function createModule(string $name)
+    public function createModule(string $name) : bool
     {
-        $defaultWD = $this->changeToRoot();
+        $defaultWD = $this->changeToRoot(); 
         if (basename(getcwd()) == 'vendor' || is_dir('../module')) {
             mkdir('../module/' . $name, 0775, true);
             chdir('../module/' . $name);
-        } elseif (chdir($defaultWD . '/../') && basename(getcwd()) == 'zfTools') { //for develop pruposes
-            if (!is_dir('module')) {
-                mkdir('module/' . $name, 0775, true);
-            }
-            chdir('module/' . $name);
         }
         mkdir('config', 0775);
         mkdir('src/Controller', 0775, true);
@@ -57,6 +59,7 @@ class CreateModule extends AbstractCommand
         $this->addToModulesList($name);
         chdir($defaultWD);
         $this->addModuleToComposerAutoload($name);
+        return true;
     }
 
     /**
@@ -104,24 +107,29 @@ class CreateModule extends AbstractCommand
     private function addToModulesList(string $name)
     {
         $modulesConfig = '../../config/modules.config.php';
-        if (is_file($modulesConfig)) {
+        if (!is_file($modulesConfig)) {
+            if(!is_dir('../../config')) {
+                mkdir('../../config', 0775, true);
+            }
+            touch($modulesConfig);
+            $modules = [];
+        } else {
             $modules = include $modulesConfig;
-            $modules[] = $name;
-            $fileContent = file_get_contents($modulesConfig);
-            $matches = [];
-            preg_match('/\/\*\*[\n\r\s\t\*@\w:\/\.\(\)-]+\*\//i', $fileContent,
-                    $matches);
-            file_put_contents($modulesConfig,
-                    "<?php\n\n" . array_shift($matches) . "\n\nreturn " . Utils::arrayExport($modules) . ";");
         }
+        $modules[] = $name;
+        $fileContent = file_get_contents($modulesConfig);
+        $matches = [];
+        preg_match('/\/\*\*[\n\r\s\t\*@\w:\/\.\(\)-]+\*\//i', $fileContent,
+                $matches);
+        file_put_contents($modulesConfig,
+                "<?php\n\n" . array_shift($matches) . "\n\nreturn " . Utils::arrayExport($modules) . ";");
     }
 
     private function addModuleToComposerAutoload(string $name)
     {
 
-        $defaultWD = getcwd();
-        chdir('../../../');
-        if (basename(getcwd()) == 'vendor' || is_file('../composer.json')) {
+        $defaultWD = $this->changeToRoot();
+        if (is_file('../composer.json')) {
             $composerJson = json_decode(file_get_contents('../composer.json'));
             $composerJson->autoload->{'psr-4'}->{$name . '\\'} = 'module/' . $name . '/src/';
             file_put_contents('../composer.json',

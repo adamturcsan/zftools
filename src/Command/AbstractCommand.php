@@ -1,8 +1,13 @@
 <?php
-declare(strict_types=1);
+
 /*
- * All rights reserved © 2016 Legow Hosting Kft.
+ * LegoW\ZFTools (https://github.com/adamturcsan/zftools)
+ * 
+ * @copyright Copyright (c) 2014-2016 Legow Hosting Kft. (http://www.legow.hu)
+ * @license https://opensource.org/licenses/MIT MIT License
  */
+
+declare (strict_types = 1);
 
 namespace LegoW\ZFTools\Command;
 
@@ -42,12 +47,12 @@ abstract class AbstractCommand implements CommandInterface
         return $valid;
     }
 
-    abstract public function run();
+    abstract public function run() : int;
 
     public function errorInfo():int
     {
         foreach($this->errorInfo as $msg) {
-            echo $msg.PHP_EOL;
+            fputs(STDERR, $msg.PHP_EOL);
         }
         return 1;
     }

@@ -1,11 +1,17 @@
 <?php
 
-declare (strict_types = 1);
 /*
- * All rights reserved © 2016 Legow Hosting Kft.
+ * LegoW\ZFTools (https://github.com/adamturcsan/zftools)
+ * 
+ * @copyright Copyright (c) 2014-2016 Legow Hosting Kft. (http://www.legow.hu)
+ * @license https://opensource.org/licenses/MIT MIT License
  */
 
-namespace LegoW\ZFTools;
+declare (strict_types = 1);
+
+namespace LegoW\ZFTools\Test;
+
+use LegoW\ZFTools\CommandHandler;
 
 /**
  * Description of CommandHandlerTest
@@ -14,7 +20,23 @@ namespace LegoW\ZFTools;
  */
 class CommandHandlerTest extends \PHPUnit_Framework_TestCase
 {
-    public function testConsturct()
+    /**
+     * @beforeClass
+     */
+    public static function setUpEnvironment()
+    {
+        TestEnvironment::setUpEnvironment();
+    }
+    
+    /**
+     * @afterClass
+     */
+    public static function removeEnvironment()
+    {
+        TestEnvironment::removeTestEnvironment();
+    }
+    
+    public function testConstruct()
     {
         $exception = null;
         try {
@@ -26,5 +48,20 @@ class CommandHandlerTest extends \PHPUnit_Framework_TestCase
         $this->assertNotNull($exception, 'Exception was thrown during empty constructor call');
         $commandHandler = new CommandHandler(['create-module']);
         $this->assertInstanceOf(CommandHandler::class, $commandHandler);
+        return $commandHandler;
+    }
+    
+    /**
+     * @depends testConstruct
+     */
+    public function testDispatch(CommandHandler $commandHandler)
+    {
+        $this->assertEquals(1, $commandHandler->dispatchCommand());
+        $args = [
+            'create-module',
+            'testDispatch'
+        ];echo getcwd().PHP_EOL;
+        $createModuleHandler = new CommandHandler($args);
+        $this->assertEquals(0, $createModuleHandler->dispatchCommand());
     }
 }

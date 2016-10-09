@@ -1,25 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
-All rights reserved © 2016 Legow Hosting Kft.
--->
-
-
 <phpunit
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="http://schema.phpunit.de/5.4/phpunit.xsd"
     bootstrap="../vendor/autoload.php"
     colors="true"
-    convertErrorsToExceptions="true"
-    convertNoticesToExceptions="true"
-    convertWarningsToExceptions="true"
-    verbose="true"
-    stopOnFailure="false"
-    processIsolation="false"
-    backupGlobals="false"
     syntaxCheck="true">
     <filter>
-        <whitelist addUncoveredFilesFromWhitelist="true">
-            <directory suffix=".php">./src</directory>
+        <whitelist>
+            <directory suffix=".php">../src/</directory>
         </whitelist>
     </filter>
-    <log type="coverage-text" target="php://stdout"/>
-    <log type="coverage-html" target="./coverage" />
+    <logging>
+        <log type="coverage-clover" target="../clover.xml" />
+    </logging>
 </phpunit>

@@ -1,8 +1,13 @@
 <?php
-declare (strict_types=1);
+
 /*
- * All rights reserved © 2016 Legow Hosting Kft.
+ * LegoW\ZFTools (https://github.com/adamturcsan/zftools)
+ * 
+ * @copyright Copyright (c) 2014-2016 Legow Hosting Kft. (http://www.legow.hu)
+ * @license https://opensource.org/licenses/MIT MIT License
  */
+
+declare (strict_types = 1);
 
 namespace LegoW\ZFTools;
 
@@ -28,7 +33,7 @@ class CommandHandler
     /**
      * 
      */
-    public function dispatchCommand()
+    public function dispatchCommand() : int
     {
         $args = $this->argStack;
         $command = null;
@@ -41,9 +46,9 @@ class CommandHandler
             array_shift($this->argStack);
         }
         if ($command->isValid()) {
-            exit($this->runCommand($command));
+            return $this->runCommand($command);
         } else {
-            exit($this->errorInfo($command));
+            return $this->errorInfo($command);
         }
     }
 
@@ -53,7 +58,7 @@ class CommandHandler
      * @return CommandInterface
      * @throws \InvalidArgumentException
      */
-    private function fetchCommand($name):CommandInterface
+    private function fetchCommand(string $name):CommandInterface
     {
         $className = 'LegoW\\ZFTools\\Command\\' . $this->commandNameFormat($name);
         if (class_exists($className)) {
@@ -69,15 +74,20 @@ class CommandHandler
     
     private function runCommand(CommandInterface $command)
     {
-        exit($command->run());
+        return $command->run();
     }
     
     private function errorInfo(CommandInterface $command)
     {
-        exit($command->errorInfo());
+        return $command->errorInfo();
     }
-
-    private function commandNameFormat($string):string
+    
+    /**
+     * 
+     * @param string $string
+     * @return string
+     */
+    private function commandNameFormat(string $string):string
     {
         return str_replace(' ', '', ucwords(str_replace('-', ' ', $string)));
     }

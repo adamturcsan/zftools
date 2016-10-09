@@ -1,4 +1,8 @@
 # zftools
+
+[![Build Status](https://travis-ci.org/adamturcsan/zftools.svg?branch=master)](https://travis-ci.org/adamturcsan/zftools)
+[![Coverage Status](https://coveralls.io/repos/github/adamturcsan/zftools/badge.svg?branch=develop)](https://coveralls.io/github/adamturcsan/zftools?branch=develop)
+
 Tools for helping Zend Framework app development processes
 
 ## Currently available commands
