@@ -27,7 +27,7 @@ class Utils
                 if(is_array($value)) {
                     $op .= self::arrayExport($value).',';
                 } else {
-                    $op .= self::typeExport($value).', ';
+                    $op .= self::typeExport($value).',';
                 }
             }
         } else {
@@ -35,7 +35,7 @@ class Utils
             {
                 $op.= "\n    ";
                 if(is_array($value)) {
-                    $op .= self::arrayExport($value).',';
+                    $op .= "'".$key."' => ".self::arrayExport($value).',';
                 } else {
                     $op .= "'".$key."' => ".self::typeExport($value).',';
                 }
