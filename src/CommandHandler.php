@@ -2,18 +2,17 @@
 
 /*
  * LegoW\ZFTools (https://github.com/adamturcsan/zftools)
- * 
+ *
  * @copyright Copyright (c) 2014-2016 Legow Hosting Kft. (http://www.legow.hu)
  * @license https://opensource.org/licenses/MIT MIT License
  */
 
-declare (strict_types = 1);
+declare(strict_types=1);
 
 namespace LegoW\ZFTools;
 
 class CommandHandler
 {
-
     /**
      * @var array
      */
@@ -24,15 +23,13 @@ class CommandHandler
      */
     public function __construct(array $arguments = [])
     {
-        if(count($arguments) == 0) {
-            throw new \InvalidArgumentException("At least one parameter has to be given");
+        if (count($arguments) == 0) {
+            throw new \InvalidArgumentException('At least one parameter has to be given');
         }
         $this->argStack = $arguments;
     }
 
-    /**
-     * 
-     */
+
     public function dispatchCommand() : int
     {
         $args = $this->argStack;
@@ -53,43 +50,43 @@ class CommandHandler
     }
 
     /**
-     * 
      * @param string $name
-     * @return CommandInterface
+     *
      * @throws \InvalidArgumentException
+     *
+     * @return CommandInterface
      */
     private function fetchCommand(string $name):CommandInterface
     {
-        $className = 'LegoW\\ZFTools\\Command\\' . $this->commandNameFormat($name);
+        $className = 'LegoW\\ZFTools\\Command\\'.$this->commandNameFormat($name);
         if (class_exists($className)) {
-            return new $className;
+            return new $className();
         }
-        throw new \InvalidArgumentException("Unknown command: ".$name. " - Command implementation ".$className." does not exists.");
+        throw new \InvalidArgumentException('Unknown command: '.$name.' - Command implementation '.$className.' does not exists.');
     }
 
     private function feedCommand($argument, CommandInterface &$command)
     {
         $command->feed($argument);
     }
-    
+
     private function runCommand(CommandInterface $command)
     {
         return $command->run();
     }
-    
+
     private function errorInfo(CommandInterface $command)
     {
         return $command->errorInfo();
     }
-    
+
     /**
-     * 
      * @param string $string
+     *
      * @return string
      */
     private function commandNameFormat(string $string):string
     {
         return str_replace(' ', '', ucwords(str_replace('-', ' ', $string)));
     }
-
 }

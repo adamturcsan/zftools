@@ -2,26 +2,25 @@
 
 /*
  * LegoW\ZFTools (https://github.com/adamturcsan/zftools)
- * 
+ *
  * @copyright Copyright (c) 2014-2016 Legow Hosting Kft. (http://www.legow.hu)
  * @license https://opensource.org/licenses/MIT MIT License
  */
 
-declare (strict_types = 1);
+declare(strict_types=1);
 
 namespace LegoW\ZFTools\Test;
 
-use LegoW\ZFTools\Test\TestEnvironment;
 use LegoW\ZFTools\Command\CreateController;
 use LegoW\ZFTools\Command\CreateModule;
+
 /**
- * Description of CreateControllerTest
+ * Description of CreateControllerTest.
  *
  * @author Turcsán Ádám <turcsan.adam@legow.hu>
  */
 class CreateControllerTest extends \PHPUnit_Framework_TestCase
 {
-    
     /**
      * @beforeClass
      */
@@ -31,7 +30,7 @@ class CreateControllerTest extends \PHPUnit_Framework_TestCase
         $createModule = new CreateModule();
         $createModule->createModule('testName');
     }
-    
+
     /**
      * @afterClass
      */
@@ -39,7 +38,7 @@ class CreateControllerTest extends \PHPUnit_Framework_TestCase
     {
         TestEnvironment::removeTestEnvironment();
     }
-    
+
     public function testValidityCheckAndConfiguration()
     {
         $createController = new CreateController();
@@ -55,16 +54,17 @@ class CreateControllerTest extends \PHPUnit_Framework_TestCase
             $exception = $ex;
         }
         $this->assertInstanceOf(\InvalidArgumentException::class, $exception);
+
         return $createController;
     }
-    
+
     public function testErrorInfo()
     {
         $createController = new CreateController();
         $createController->isValid();
         $this->assertEquals(1, $createController->errorInfo());
     }
-    
+
     public function testCreateController()
     {
         $createController = new CreateController();
@@ -72,7 +72,7 @@ class CreateControllerTest extends \PHPUnit_Framework_TestCase
         $controllerName = 'Test';
         $this->assertTrue($createController->createController($moduleName, $controllerName));
     }
-    
+
     /**
      * @depends testValidityCheckAndConfiguration
      */
