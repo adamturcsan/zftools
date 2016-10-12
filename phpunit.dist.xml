@@ -5,6 +5,11 @@
     bootstrap="./vendor/autoload.php"
     colors="true"
     syntaxCheck="true">
+    <testsuites>
+        <testsuite name="common">
+            <directory>test</directory>
+        </testsuite>
+    </testsuites>
     <filter>
         <whitelist>
             <directory suffix=".php">./src/</directory>

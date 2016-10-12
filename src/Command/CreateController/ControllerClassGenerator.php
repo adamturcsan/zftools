@@ -30,7 +30,7 @@ class ControllerClassGenerator extends FileGenerator
     {
         $options = [
             'classes' => [
-                new \Zend\Code\Generator\ClassGenerator(
+                new ClassGenerator(
                         $controllerName . 'Controller', $namespace, null,
                         'Zend\\Mvc\\Controller\\AbstractActionController', [],
                         [], $this->getMethods(),

@@ -38,7 +38,7 @@ class CommandHandler
         $args = $this->argStack;
         $command = null;
         foreach ($args as $argument) {
-            if ($command == null) {
+            if ($command === null) {
                 $command = $this->fetchCommand($argument);
             } else {
                 $this->feedCommand($argument, $command);

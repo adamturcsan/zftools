@@ -49,7 +49,7 @@ class TestEnvironment
         putenv('COMPOSER_HOME='.getcwd().'/../vendor/bin/composer');
         $cwd = getcwd();
         chdir($root);
-        $input = new ArrayInput(['command' => 'init']);
+        $input = new ArrayInput(['command' => 'init', '--no-interaction']);
         $application = new Application();
         $application->setAutoExit(false); // prevent `$application->run` method from exitting the script
         $exitCode = $application->run($input);
