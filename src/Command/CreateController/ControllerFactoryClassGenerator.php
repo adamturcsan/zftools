@@ -2,35 +2,32 @@
 
 /*
  * LegoW\ZFTools (https://github.com/adamturcsan/zftools)
- * 
+ *
  * @copyright Copyright (c) 2014-2016 Legow Hosting Kft. (http://www.legow.hu)
  * @license https://opensource.org/licenses/MIT MIT License
  */
 
-declare (strict_types = 1);
+declare(strict_types=1);
 
 namespace LegoW\ZFTools\Command\CreateController;
 
-use Zend\Code\Generator\{
-    FileGenerator,
-    ClassGenerator,
-    MethodGenerator,
-    DocBlockGenerator
-};
+use Zend\Code\Generator\ClassGenerator;
+use Zend\Code\Generator\DocBlockGenerator;
+use Zend\Code\Generator\FileGenerator;
+use Zend\Code\Generator\MethodGenerator;
 
 /**
- * Description of ControllerFactoryClassGenerator
+ * Description of ControllerFactoryClassGenerator.
  *
  * @author Turcsán Ádám <turcsan.adam@legow.hu>
  */
 class ControllerFactoryClassGenerator extends FileGenerator
 {
-
     public function __construct(string $namespace, string $controllerName)
     {
         $options = [
             'classes' => [
-                new ClassGenerator($controllerName . 'ControllerFactory',
+                new ClassGenerator($controllerName.'ControllerFactory',
                         $namespace, null, null, ['\Zend\\ServiceManager\\Factory\\FactoryInterface'], [],
                         $this->getMethods($controllerName),
                         $this->getFactoryDocBlock($controllerName)),
@@ -38,8 +35,8 @@ class ControllerFactoryClassGenerator extends FileGenerator
             'uses' => [
                 'Zend\\Mvc\\Controller\\AbstractActionController',
                 'Zend\\View\\Model\\ViewModel',
-                'Zend\\ServiceManager\\Factory\\FactoryInterface'
-            ]
+                'Zend\\ServiceManager\\Factory\\FactoryInterface',
+            ],
         ];
         parent::__construct($options);
     }
@@ -52,16 +49,16 @@ class ControllerFactoryClassGenerator extends FileGenerator
                     [
                         [
                             'name' => 'container',
-                            'type' => '\\Interop\\Container\\ContainerInterface'
+                            'type' => '\\Interop\\Container\\ContainerInterface',
                         ],
                         'requestedName',
                             [
-                            'name' => 'options',
-                            'type' => 'array',
-                            'defaultvalue' => null
-                        ]
+                            'name'         => 'options',
+                            'type'         => 'array',
+                            'defaultvalue' => null,
+                        ],
                     ], 'public', 'return new '.$controllerName.'Controller();'
-            )
+            ),
         ];
     }
 
@@ -69,5 +66,4 @@ class ControllerFactoryClassGenerator extends FileGenerator
     {
         return new DocBlockGenerator();
     }
-
 }

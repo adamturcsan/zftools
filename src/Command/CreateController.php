@@ -2,32 +2,29 @@
 
 /*
  * LegoW\ZFTools (https://github.com/adamturcsan/zftools)
- * 
+ *
  * @copyright Copyright (c) 2014-2016 Legow Hosting Kft. (http://www.legow.hu)
  * @license https://opensource.org/licenses/MIT MIT License
  */
 
-declare (strict_types = 1);
+declare(strict_types=1);
 
 namespace LegoW\ZFTools\Command;
 
-use LegoW\ZFTools\Command\CreateController\{
-    ControllerClassGenerator,
-    ControllerFactoryClassGenerator,
-    ModuleConfigGenerator
-};
+use LegoW\ZFTools\Command\CreateController\ControllerClassGenerator;
+use LegoW\ZFTools\Command\CreateController\ControllerFactoryClassGenerator;
+use LegoW\ZFTools\Command\CreateController\ModuleConfigGenerator;
 
 /**
- * Description of CreateController
+ * Description of CreateController.
  *
  * @author junior
  */
 class CreateController extends AbstractCommand
 {
-
     protected $availableOptions = [
         'module' => 'required',
-        'name' => 'required'
+        'name'   => 'required',
     ];
     protected $options = [];
     protected $errorInfo = [];
@@ -35,7 +32,7 @@ class CreateController extends AbstractCommand
     public function run(): int
     {
         if (!class_exists('\\Zend\\ModuleManager\\ModuleManager')) {
-            throw new \Exception("Not in a Zend Framework project");
+            throw new \Exception('Not in a Zend Framework project');
         }
 //        if(!$this->moduleExists($this->options['module'])) {
 //            throw new \Exception("Module does not exist");
@@ -44,6 +41,7 @@ class CreateController extends AbstractCommand
                         $this->options['name'])) {
             return 0;
         }
+
         return 1;
     }
 
@@ -52,12 +50,12 @@ class CreateController extends AbstractCommand
     {
         $defaultWD = $this->changeToRoot();
         if (basename(getcwd()) == 'vendor' || is_dir('../module')) {
-            chdir('../module/' . $moduleName);
-        } elseif (chdir($defaultWD . '/../') && basename(getcwd()) == 'zfTools') { //for develop pruposes
+            chdir('../module/'.$moduleName);
+        } elseif (chdir($defaultWD.'/../') && basename(getcwd()) == 'zfTools') { //for develop pruposes
             if (!is_dir('module')) {
-                mkdir('module/' . $moduleName, 0775, true);
+                mkdir('module/'.$moduleName, 0775, true);
             }
-            chdir('module/' . $moduleName);
+            chdir('module/'.$moduleName);
         }
         if (!is_dir('src/Controller')) {
             mkdir('src/Controller', 0775, true);
@@ -66,6 +64,7 @@ class CreateController extends AbstractCommand
         $this->generateControllerFiles($moduleName, $controllerName);
         $this->addControllerToModuleConfig($moduleName, $controllerName);
         chdir($defaultWD);
+
         return true;
     }
 
@@ -74,12 +73,13 @@ class CreateController extends AbstractCommand
     {
         $contollerGenerator = new ControllerClassGenerator($moduleName,
                 $controllerName);
-        file_put_contents($controllerName . 'Controller.php',
+        file_put_contents($controllerName.'Controller.php',
                 $contollerGenerator->generate());
         $factoryGenerator = new ControllerFactoryClassGenerator($moduleName,
                 $controllerName);
-        file_put_contents($controllerName . 'ControllerFactory.php',
+        file_put_contents($controllerName.'ControllerFactory.php',
                 $factoryGenerator->generate());
+
         return true;
     }
 
@@ -96,13 +96,12 @@ class CreateController extends AbstractCommand
     }
 
     /**
-     * 
      * @param string $moduleName
+     *
      * @return bool
      */
     protected function moduleExists(string $moduleName): bool
     {
-        return class_exists($moduleName . '\\Module');
+        return class_exists($moduleName.'\\Module');
     }
-
 }
