@@ -35,21 +35,16 @@ class CommandHandler
      */
     public function dispatchCommand() : int
     {
+        $command = $this->fetchCommand(array_shift($this->argStack));
         $args = $this->argStack;
-        $command = null;
         foreach ($args as $argument) {
-            if ($command == null) {
-                $command = $this->fetchCommand($argument);
-            } else {
-                $this->feedCommand($argument, $command);
-            }
+            $this->feedCommand($argument, $command);
             array_shift($this->argStack);
         }
         if ($command->isValid()) {
             return $this->runCommand($command);
-        } else {
-            return $this->errorInfo($command);
         }
+        return $this->errorInfo($command);
     }
 
     /**

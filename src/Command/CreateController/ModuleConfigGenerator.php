@@ -19,7 +19,7 @@ namespace LegoW\ZFTools\Command\CreateController;
 class ModuleConfigGenerator extends \Zend\Code\Generator\FileGenerator
 {
 
-    public function __construct(string $namespace, string $controllerName)
+    public function __construct(string $controllerName)
     {
         $filePath = 'config/module.config.php';
 

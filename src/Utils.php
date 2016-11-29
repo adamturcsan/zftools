@@ -18,31 +18,20 @@ namespace LegoW\ZFTools;
  */
 class Utils
 {
-    public static function arrayExport(array $array)
+    public static function arrayExport(array $array): string
     {
-        $op = "[";
-        if(!self::isAssoc($array)) {
-            foreach ($array as $value) {
-                $op.= "\n    ";
-                if(is_array($value)) {
-                    $op .= self::arrayExport($value).',';
-                } else {
-                    $op .= self::typeExport($value).',';
-                }
+        $arrayString = '[';
+        $isAssoc = self::isAssoc($array);
+        foreach($array as $key => $value) {
+            $arrayString .= "\n    ";
+            if($isAssoc) {
+                $arrayString .= "'".$key."' => ";
             }
-        } else {
-            foreach($array as $key => $value)
-            {
-                $op.= "\n    ";
-                if(is_array($value)) {
-                    $op .= "'".$key."' => ".self::arrayExport($value).',';
-                } else {
-                    $op .= "'".$key."' => ".self::typeExport($value).',';
-                }
-            }
+            $arrayString .= is_array($value) ? self::arrayExport($value) : self::typeExport($value);
+            $arrayString .= ',';
         }
-        $op .= "\n]";
-        return $op;
+        $arrayString .= "\n]";
+        return $arrayString;
     }
     
     public static function typeExport($value)

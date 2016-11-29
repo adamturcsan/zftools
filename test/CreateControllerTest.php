@@ -12,8 +12,11 @@ declare (strict_types = 1);
 namespace LegoW\ZFTools\Test;
 
 use LegoW\ZFTools\Test\TestEnvironment;
-use LegoW\ZFTools\Command\CreateController;
-use LegoW\ZFTools\Command\CreateModule;
+use LegoW\ZFTools\Command\{
+    CreateModule,
+    CreateController,
+    CreateController\ModuleNotExistsException
+};
 /**
  * Description of CreateControllerTest
  *
@@ -76,8 +79,18 @@ class CreateControllerTest extends \PHPUnit_Framework_TestCase
     /**
      * @depends testValidityCheckAndConfiguration
      */
-    public function testRun(CreateController $createModule)
+    public function testRun(CreateController $createController)
     {
-        $this->assertEquals(0, $createModule->run());
+        $exception = null;
+        try{
+            $failingCreateController = new CreateController();
+            $failingCreateController->feed('NonexistentModule');
+            $failingCreateController->feed('Test');
+            $failingCreateController->run();
+        } catch (\Exception $ex) {
+            $exception = $ex;
+        }
+        $this->assertInstanceOf(ModuleNotExistsException::class, $exception);
+        $this->assertEquals(0, $createController->run());
     }
 }

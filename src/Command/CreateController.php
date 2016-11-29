@@ -14,7 +14,8 @@ namespace LegoW\ZFTools\Command;
 use LegoW\ZFTools\Command\CreateController\{
     ControllerClassGenerator,
     ControllerFactoryClassGenerator,
-    ModuleConfigGenerator
+    ModuleConfigGenerator,
+    ModuleNotExistsException
 };
 
 /**
@@ -34,12 +35,9 @@ class CreateController extends AbstractCommand
 
     public function run(): int
     {
-        if (!class_exists('\\Zend\\ModuleManager\\ModuleManager')) {
-            throw new \Exception("Not in a Zend Framework project");
+        if (!$this->moduleExists($this->options['module'])) {
+            throw new ModuleNotExistsException("Module does not exist");
         }
-//        if(!$this->moduleExists($this->options['module'])) {
-//            throw new \Exception("Module does not exist");
-//        }
         if ($this->createController($this->options['module'],
                         $this->options['name'])) {
             return 0;
@@ -47,24 +45,16 @@ class CreateController extends AbstractCommand
         return 1;
     }
 
-    public function createController(string $moduleName,
-            string $controllerName): bool
+    public function createController(string $moduleName, string $controllerName): bool
     {
         $defaultWD = $this->changeToRoot();
-        if (basename(getcwd()) == 'vendor' || is_dir('../module')) {
-            chdir('../module/' . $moduleName);
-        } elseif (chdir($defaultWD . '/../') && basename(getcwd()) == 'zfTools') { //for develop pruposes
-            if (!is_dir('module')) {
-                mkdir('module/' . $moduleName, 0775, true);
-            }
-            chdir('module/' . $moduleName);
-        }
+        chdir('../module/' . $moduleName);
         if (!is_dir('src/Controller')) {
             mkdir('src/Controller', 0775, true);
         }
         chdir('src/Controller');
         $this->generateControllerFiles($moduleName, $controllerName);
-        $this->addControllerToModuleConfig($moduleName, $controllerName);
+        $this->addControllerToModuleConfig($controllerName);
         chdir($defaultWD);
         return true;
     }
@@ -83,13 +73,11 @@ class CreateController extends AbstractCommand
         return true;
     }
 
-    protected function addControllerToModuleConfig(string $moduleName,
-            string $controllerName)
+    protected function addControllerToModuleConfig(string $controllerName)
     {
         chdir('../..');
         if (is_file('config/module.config.php')) {
-            $configGenerator = new ModuleConfigGenerator($moduleName,
-                    $controllerName);
+            $configGenerator = new ModuleConfigGenerator($controllerName);
             file_put_contents('config/module.config.php',
                     $configGenerator->generate());
         }
@@ -102,6 +90,12 @@ class CreateController extends AbstractCommand
      */
     protected function moduleExists(string $moduleName): bool
     {
+        $defaultWD = $this->changeToRoot();
+        $moduleFile = '../module/' . $moduleName . '/src/Module.php';
+        if (is_file($moduleFile)) {
+            include_once $moduleFile;
+        }
+        chdir($defaultWD);
         return class_exists($moduleName . '\\Module');
     }
 
