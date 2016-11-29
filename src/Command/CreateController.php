@@ -54,7 +54,7 @@ class CreateController extends AbstractCommand
         }
         chdir('src/Controller');
         $this->generateControllerFiles($moduleName, $controllerName);
-        $this->addControllerToModuleConfig($moduleName, $controllerName);
+        $this->addControllerToModuleConfig($controllerName);
         chdir($defaultWD);
         return true;
     }
@@ -73,13 +73,11 @@ class CreateController extends AbstractCommand
         return true;
     }
 
-    protected function addControllerToModuleConfig(string $moduleName,
-            string $controllerName)
+    protected function addControllerToModuleConfig(string $controllerName)
     {
         chdir('../..');
         if (is_file('config/module.config.php')) {
-            $configGenerator = new ModuleConfigGenerator($moduleName,
-                    $controllerName);
+            $configGenerator = new ModuleConfigGenerator($controllerName);
             file_put_contents('config/module.config.php',
                     $configGenerator->generate());
         }

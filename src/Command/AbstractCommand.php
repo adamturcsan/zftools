@@ -27,7 +27,7 @@ abstract class AbstractCommand implements CommandInterface
     
     public function feed($argument)
     {
-        foreach($this->availableOptions as $name => $isRequired) {
+        foreach(array_keys($this->availableOptions) as $name) {
             if(!array_key_exists($name, $this->options)) {
                 $this->options[$name] = $argument;
                 return;
